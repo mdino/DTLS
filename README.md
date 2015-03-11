@@ -84,7 +84,8 @@ $ gcc dtls_udp.c -lssl -lcrypto -pthread -o dtls_udp
 
 ##Primjer rada DTLSA
 
-###ClientHello: Klijent  šalje  podržanu   maksimalnu   verziju   DTLS  protokola,   slučajan  broj,
+###ClientHello: 
+Klijent  šalje  podržanu   maksimalnu   verziju   DTLS  protokola,   slučajan  broj,
 identifikator sjednice, listu predloženih kripto algoritama i listu kompresijskih metoda koje
 podržava. Slučajan broj se koristi za zaštitu od ponavljanja poruke.
 
