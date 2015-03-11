@@ -4,6 +4,106 @@ Datagram Transport Layer Security (DTLS) pruža sigurnost komunikacije za datagr
 DTLS je dizajniran kako bi bio što sličniji TLS sa minimalnom količinom promjena potrebnih da se riješe problemi nastali iz redoslijeda ili gubitka paketa. TLS zahtjeva pouzdan prijenos podataka, tipično TCP, dok DTLS zahtjeva UDP. DTLS još je poznatiji kao Secure Real Time Transport Protocol, kako nam samo ime kaže koristi se kada je prijenos podatka orijentiran brzini i bez kašnjenja. Najčešće se koristi prilikom real time Multiplayer Online igra, Voice over IP te kako bi se osigurala kontrola prijenosa kanala za razne streaming protokole kao što su DCCP, SCTP i SRTP.
 
 
+
+# Certificate Authority
+openssl req -nodes -x509 -newkey rsa:512 -days 365 -keyout ca-key.pem -out ca-cert.pem
+
+# Server Certificate
+openssl req -nodes -new -newkey rsa:512 -keyout server-key.pem -out server.csr
+
+# Sign Server Certificate
+openssl ca -config ca.conf -days 365 -in server.csr -out server-cert.pem
+
+# Client Certificate
+openssl req -nodes -new -newkey rsa:512 -keyout client-key.pem -out client.csr
+
+# Sign Client Certificate
+openssl ca -config ca.conf -days 365 -in client.csr -out client-cert.pem
+
+
+U ca.conf odredili smo neke parametre kao što su duljina trajanja certifikate, ime ključeva i neka opčenita pitanja koja su ugrađena u sam certifikat poput email adrese koje možemo ostaviti „optional“. 
+
+[ ca ]
+default_ca = ca_default
+
+[ ca_default ]
+dir = ./
+certs = $dir
+new_certs_dir = $dir
+database = ca-db-index
+serial = ca-db-serial
+RANDFILE = ca-db-rand
+certificate = ca-cert.pem
+private_key = ca-key.pem
+default_days = 365
+default_crl_days = 365
+default_md = md5
+preserve = no
+policy = generic_policy
+
+[ generic_policy ]
+countryName = optional
+stateOrProvinceName = optional
+localityName = optional
+organizationName = optional
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+Certifikate moramo spremiti u posebnu mapu certs jer smo tako definirali u samom kodu.
+Na arka.foi.hr nalaze se dva primjera: 
+Prvi je dtls.test.cpp koji koristi memori BIO, te nam omogućuje simuliranje gubitka paketa pomoču DH parametra. Za kompajliranje koristimo:
+$ gcc dtls-test.cpp –lssl –lcrypto –fno –exceptions –o dtls-test
+
+Drugi primjer naziva je dtls_udp.cpp koji šalje poruke pomoću UDP kanala koristeći DTLS enkripciju. Za komajliranje koristimo:
+$ gcc dtls_udp.c -lssl -lcrypto -pthread -o dtls_udp
+./dtls_udp_echo – za kreiranje servera (server sluša)
+
+
+
+U ca.conf odredili smo neke parametre kao što su duljina trajanja certifikate, ime ključeva i neka opčenita pitanja koja su ugrađena u sam certifikat poput email adrese koje možemo ostaviti „optional“. 
+
+[ ca ]
+default_ca = ca_default
+
+[ ca_default ]
+dir = ./
+certs = $dir
+new_certs_dir = $dir
+database = ca-db-index
+serial = ca-db-serial
+RANDFILE = ca-db-rand
+certificate = ca-cert.pem
+private_key = ca-key.pem
+default_days = 365
+default_crl_days = 365
+default_md = md5
+preserve = no
+policy = generic_policy
+
+[ generic_policy ]
+countryName = optional
+stateOrProvinceName = optional
+localityName = optional
+organizationName = optional
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+Certifikate moramo spremiti u posebnu mapu certs jer smo tako definirali u samom kodu.
+Na arka.foi.hr nalaze se dva primjera: 
+Prvi je dtls.test.cpp koji koristi memori BIO, te nam omogućuje simuliranje gubitka paketa pomoču DH parametra. Za kompajliranje koristimo:
+$ gcc dtls-test.cpp –lssl –lcrypto –fno –exceptions –o dtls-test
+
+Drugi primjer naziva je dtls_udp.cpp koji šalje poruke pomoću UDP kanala koristeći DTLS enkripciju. Za komajliranje koristimo:
+$ gcc dtls_udp.c -lssl -lcrypto -pthread -o dtls_udp
+./dtls_udp_echo – za kreiranje servera (server sluša)
+
+
+
+
+
+
 Datagram Transport Layer Security (DTLS) pruža sigurnost komunikacije za datagrame protokola. DTLS se temelji na Transport Layer Security (TLS) protokolu. Transport Layer Security (TLS) je protokol koji omogućuje sigurnu komunikaciju putem interneta, tj. osigurava autentičnost i privatnost komunikacije putem interneta.
 	
 DTLS je dizajniran kako bi bio što sličniji TLS sa minimalnom količinom promjena potrebnih da se riješe problemi nastali iz redoslijeda ili gubitka paketa. TLS zahtjeva pouzdan prijenos podataka, tipično TCP, dakle ne može se koristiti za nepouzdan prijenos podataka.
