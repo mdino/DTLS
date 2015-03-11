@@ -67,7 +67,7 @@ Prvi je dtls.test.cpp koji koristi memori BIO, te nam omogućuje simuliranje gub
 $ gcc dtls-test.cpp –lssl –lcrypto –fno –exceptions –o dtls-test
 
 
-#Dtls_UDP i DTLS_razmjena 
+##Dtls_UDP i DTLS_razmjena 
 
 Certifikate moramo spremiti u posebnu mapu certs jer smo tako definirali u samom kodu.
 Na arka.foi.hr nalaze se dva primjera: 
@@ -82,50 +82,50 @@ $ gcc dtls_udp.c -lssl -lcrypto -pthread -o dtls_udp
 
 
 
-#Primjer rada DTLSA
+##Primjer rada DTLSA
 
-ClientHello: Klijent  šalje  podržanu   maksimalnu   verziju   DTLS  protokola,   slučajan  broj,
+###ClientHello: Klijent  šalje  podržanu   maksimalnu   verziju   DTLS  protokola,   slučajan  broj,
 identifikator sjednice, listu predloženih kripto algoritama i listu kompresijskih metoda koje
 podržava. Slučajan broj se koristi za zaštitu od ponavljanja poruke.
 
-HelloVerifyRequest:
+###HelloVerifyRequest:
 Server šalje kolačić radi sprečavanja DOS napada. Klijent je dužan ponoviti kolačić u ClientHello poruci koja slijedi. Poslužitelj šalje ovu poruku kada ne može provjeriti valjanost kolačića kojeg je poslao klijent u prvoj ClientHello poruci ova poruka je opcionalna pa ako se ne koristi onda je tijek dogovaranja identičan TLS-u. 
 
-ClientHello:
+###ClientHello:
 Poruka sadrži sve podatke kao i prva ClienHello poruka, ali ovaj puta sadrži i kolačić koji je server predao unutar HalloVerifyRequest.
 
-ServerHello:
+###ServerHello:
 Server šalje odabranu verziju, algoritme i slučajan broj.
 
-Certificate: 
+###Certificate: 
 Poslužitelj šalje X.509 certifikat koji sadrži RSA javni ključ koji poslužitelj koristi za potpisivanje DH parametra.
 
-ServerKeyExchange: 
+###ServerKeyExchange: 
 Poslužitelj šalje DH pramtere te tako za počinje DH razmjenu
 
-CertificateRequest: 
+###CertificateRequest: 
 Poslužitelj šalje klijentu zahtjev za njegovim certifikatom. Taj certifikat će klijent koristiti za potpisivanje svojih DH parametra.
 
-ServerHellpDone:
+###ServerHellpDone:
 Ova poruka označava da je to zadnja poruka od poslužitelja u ovom slijedu poruka.
 
-Certificate: 
+###Certificate: 
 Klijent šalje svoj certifikat.
 ClientKeyExchange: 
 Klijent šalje DH parametre pomoću kojeg će obje strane završiti razmjenu ključeva.
 
-CertificateVerify:
+###CertificateVerify:
 Klijent šalje potpis svih prethodnih primljenih i poslanih poruka, koristeći svoj tajni ključ.
 
-ChangeCipherSpec:
+###ChangeCipherSpec:
 Klijent šalje poruku koja označava da je prošlo na upravo odgovorene sigurnosne parametre.
 
-Finished: 
+###Finished: 
 Klijent šalje poruku koja sadrži MAC svih prethodnih poruka. Poruka je zaštićena s upravo dogovorenim sigurnosnim parametrima.
 
-ChangeCipherSpec:
+###ChangeCipherSpec:
 Poslužitelj šalje poruku koja označava da je prošao na upravo dogovorene sigurnosne parametre.
 
-Finished:
+###Finished:
 Poslužitelj šalje poruku koja sadrži MAC svih prethodnih poruka. Poruka je zastićena s upravo dogovorenim sigurnosnim parametrima
  
